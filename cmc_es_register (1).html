@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMC ES — สมัครเข้าทีม</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue: #00aaff;
+    --cyan: #00ffea;
+    --dark: #050a12;
+    --card: #0a1628;
+    --border: #1a3a5c;
+    --glow: #0080ff;
+    --silver: #c0d8f0;
+    --accent: #00ffea;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--dark);
+    font-family: 'Sarabun', sans-serif;
+    color: var(--silver);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── ANIMATED BG ─── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,120,255,0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 10% 80%, rgba(0,255,234,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 90% 20%, rgba(0,80,200,0.1) 0%, transparent 60%);
+    pointer-events: none; z-index: 0;
+    animation: bgPulse 6s ease-in-out infinite alternate;
+  }
+  @keyframes bgPulse {
+    from { opacity: 0.7; }
+    to   { opacity: 1; }
+  }
+
+  /* grid lines */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(0,170,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,170,255,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none; z-index: 0;
+  }
+
+  .wrapper { position: relative; z-index: 1; max-width: 780px; margin: 0 auto; padding: 30px 20px 60px; }
+
+  /* ─── HEADER ─── */
+  .header {
+    text-align: center;
+    padding: 40px 0 30px;
+    position: relative;
+  }
+
+  .logo-wrap {
+    width: 140px; height: 140px;
+    margin: 0 auto 20px;
+    position: relative;
+    filter: drop-shadow(0 0 24px rgba(0,170,255,0.7)) drop-shadow(0 0 60px rgba(0,255,234,0.3));
+    animation: logoFloat 3s ease-in-out infinite;
+  }
+  .logo-wrap img { width: 100%; height: 100%; object-fit: contain; }
+
+  @keyframes logoFloat {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(-8px); }
+  }
+
+  .site-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(1.6rem, 5vw, 2.6rem);
+    font-weight: 900;
+    letter-spacing: 4px;
+    background: linear-gradient(90deg, var(--blue), var(--cyan), var(--blue));
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 3s linear infinite;
+  }
+  @keyframes shimmer { to { background-position: 200% center; } }
+
+  .site-sub {
+    font-size: 0.9rem; letter-spacing: 6px; text-transform: uppercase;
+    color: rgba(192,216,240,0.5); margin-top: 6px;
+  }
+
+  /* ─── LIGHTNING DIVIDER ─── */
+  .divider {
+    display: flex; align-items: center; gap: 12px; margin: 24px 0;
+  }
+  .divider::before, .divider::after {
+    content: ''; flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--blue), var(--cyan), var(--blue), transparent);
+    animation: linePulse 2s ease-in-out infinite;
+  }
+  @keyframes linePulse {
+    0%,100% { opacity: 0.4; } 50% { opacity: 1; }
+  }
+  .divider span {
+    font-family: 'Orbitron', sans-serif; font-size: 0.65rem;
+    color: var(--cyan); letter-spacing: 3px;
+  }
+
+  /* ─── ROLE SELECTOR ─── */
+  .role-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 12px; margin-bottom: 30px;
+  }
+
+  .role-btn {
+    background: rgba(10,22,40,0.8);
+    border: 1px solid var(--border);
+    color: var(--silver);
+    font-family: 'Sarabun', sans-serif;
+    font-size: 0.85rem; font-weight: 600;
+    padding: 14px 10px;
+    cursor: pointer; border-radius: 8px;
+    transition: all 0.25s;
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .role-btn::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(0,170,255,0.1), transparent);
+    opacity: 0; transition: opacity 0.25s;
+  }
+  .role-btn:hover::after, .role-btn.active::after { opacity: 1; }
+  .role-btn:hover, .role-btn.active {
+    border-color: var(--blue);
+    color: #fff;
+    box-shadow: 0 0 16px rgba(0,170,255,0.4), inset 0 0 20px rgba(0,170,255,0.08);
+    transform: translateY(-2px);
+  }
+  .role-btn.active {
+    border-color: var(--cyan);
+    box-shadow: 0 0 24px rgba(0,255,234,0.5), inset 0 0 20px rgba(0,255,234,0.1);
+  }
+  .role-icon { font-size: 1.5rem; }
+
+  /* ─── FORM CARD ─── */
+  .form-card {
+    background: rgba(10,22,40,0.85);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px 32px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 40px rgba(0,100,200,0.15), inset 0 1px 0 rgba(255,255,255,0.05);
+    position: relative; overflow: hidden;
+    display: none;
+    animation: cardIn 0.4s cubic-bezier(0.22,1,0.36,1);
+  }
+  .form-card.visible { display: block; }
+
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(24px) scale(0.98); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* corner deco */
+  .form-card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; width: 60px; height: 60px;
+    border-top: 2px solid var(--cyan); border-left: 2px solid var(--cyan);
+    border-radius: 16px 0 0 0; pointer-events: none;
+  }
+  .form-card::after {
+    content: ''; position: absolute;
+    bottom: 0; right: 0; width: 60px; height: 60px;
+    border-bottom: 2px solid var(--blue); border-right: 2px solid var(--blue);
+    border-radius: 0 0 16px 0; pointer-events: none;
+  }
+
+  .form-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.15rem; font-weight: 700;
+    color: var(--cyan); letter-spacing: 3px;
+    margin-bottom: 28px; text-align: center;
+    text-shadow: 0 0 20px rgba(0,255,234,0.5);
+  }
+
+  /* ─── FIELDS ─── */
+  .field { margin-bottom: 22px; }
+
+  label {
+    display: block; font-size: 0.8rem;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: rgba(192,216,240,0.7); margin-bottom: 8px;
+    font-weight: 600;
+  }
+  label span { color: var(--cyan); margin-right: 4px; }
+
+  input[type="text"], select, textarea {
+    width: 100%;
+    background: rgba(0,10,30,0.6);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: #fff;
+    font-family: 'Sarabun', sans-serif;
+    font-size: 0.95rem;
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  input[type="text"]:focus, select:focus, textarea:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 12px rgba(0,170,255,0.25), inset 0 0 8px rgba(0,170,255,0.05);
+  }
+  textarea { resize: vertical; min-height: 90px; }
+  select option { background: #0a1628; }
+
+  /* ─── EXPERIENCE TOGGLE ─── */
+  .exp-toggle { display: flex; gap: 12px; }
+  .exp-btn {
+    flex: 1; padding: 12px;
+    background: rgba(0,10,30,0.6);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--silver); font-family: 'Sarabun', sans-serif;
+    font-size: 0.95rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+    text-align: center;
+  }
+  .exp-btn:hover { border-color: var(--blue); color: #fff; }
+  .exp-btn.yes.sel {
+    background: rgba(0,255,100,0.1); border-color: #00ff66;
+    color: #00ff66; box-shadow: 0 0 12px rgba(0,255,100,0.3);
+  }
+  .exp-btn.no.sel {
+    background: rgba(255,60,60,0.1); border-color: #ff4444;
+    color: #ff6666; box-shadow: 0 0 12px rgba(255,60,60,0.3);
+  }
+
+  /* ─── SUBMIT ─── */
+  .submit-btn {
+    width: 100%; margin-top: 10px;
+    padding: 16px;
+    background: linear-gradient(135deg, #0055cc, #0099ee);
+    border: 1px solid var(--cyan);
+    border-radius: 10px;
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.95rem; font-weight: 700;
+    letter-spacing: 3px;
+    cursor: pointer;
+    position: relative; overflow: hidden;
+    transition: all 0.25s;
+    box-shadow: 0 0 20px rgba(0,100,255,0.3);
+  }
+  .submit-btn::before {
+    content: ''; position: absolute;
+    top: -50%; left: -60%; width: 40%; height: 200%;
+    background: rgba(255,255,255,0.15);
+    transform: skewX(-20deg);
+    transition: left 0.5s;
+  }
+  .submit-btn:hover::before { left: 120%; }
+  .submit-btn:hover {
+    box-shadow: 0 0 32px rgba(0,170,255,0.6);
+    transform: translateY(-2px);
+  }
+  .submit-btn:disabled {
+    opacity: 0.5; cursor: not-allowed; transform: none;
+  }
+
+  /* ─── TOAST ─── */
+  .toast {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+    padding: 14px 28px; border-radius: 10px;
+    font-family: 'Sarabun', sans-serif; font-size: 0.95rem; font-weight: 600;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.3s, transform 0.3s;
+    transform: translateX(-50%) translateY(20px);
+    z-index: 999;
+  }
+  .toast.show {
+    opacity: 1; transform: translateX(-50%) translateY(0);
+  }
+  .toast.success {
+    background: rgba(0,60,20,0.95); border: 1px solid #00cc55;
+    color: #00ff77; box-shadow: 0 0 20px rgba(0,200,80,0.4);
+  }
+  .toast.error {
+    background: rgba(60,0,0,0.95); border: 1px solid #cc0000;
+    color: #ff6666; box-shadow: 0 0 20px rgba(200,0,0,0.4);
+  }
+
+  /* ─── ADMIN LINK ─── */
+  .admin-link {
+    text-align: center; margin-top: 40px;
+  }
+  .admin-link a {
+    font-size: 0.7rem; letter-spacing: 3px;
+    color: rgba(192,216,240,0.2);
+    text-decoration: none; text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .admin-link a:hover { color: rgba(0,170,255,0.5); }
+
+  /* ─── MODAL overlay ─── */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(6px);
+    z-index: 900;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  }
+  .overlay.show { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: rgba(8,18,36,0.97);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px 32px;
+    width: 90%; max-width: 420px;
+    text-align: center;
+    box-shadow: 0 0 60px rgba(0,100,255,0.3);
+    position: relative;
+    transform: scale(0.92); transition: transform 0.3s;
+  }
+  .overlay.show .modal { transform: scale(1); }
+  .modal::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; width: 50px; height: 50px;
+    border-top: 2px solid var(--cyan); border-left: 2px solid var(--cyan);
+    border-radius: 16px 0 0 0;
+  }
+  .modal-title {
+    font-family: 'Orbitron', sans-serif; font-size: 1rem;
+    color: var(--cyan); letter-spacing: 3px; margin-bottom: 20px;
+  }
+  .modal input[type="password"], .modal input[type="text"] {
+    text-align: center; letter-spacing: 4px; font-size: 1.1rem;
+  }
+  .modal-btn {
+    width: 100%; margin-top: 16px;
+    padding: 13px;
+    background: linear-gradient(135deg, #004499, #0077cc);
+    border: 1px solid var(--blue); border-radius: 8px;
+    color: #fff; font-family: 'Orbitron', sans-serif;
+    font-size: 0.85rem; letter-spacing: 2px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .modal-btn:hover { box-shadow: 0 0 20px rgba(0,150,255,0.5); }
+  .modal-err {
+    color: #ff6666; font-size: 0.8rem; margin-top: 8px;
+    min-height: 18px;
+  }
+
+  /* ─── ADMIN PANEL ─── */
+  #adminPanel { display: none; }
+  #adminPanel.visible { display: block; }
+
+  .admin-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 28px; flex-wrap: wrap; gap: 12px;
+  }
+  .admin-title {
+    font-family: 'Orbitron', sans-serif; font-size: 1.1rem;
+    color: var(--cyan); letter-spacing: 3px;
+  }
+  .admin-logout {
+    background: rgba(255,50,50,0.15); border: 1px solid rgba(255,50,50,0.4);
+    color: #ff8888; padding: 8px 18px; border-radius: 6px;
+    font-family: 'Sarabun', sans-serif; cursor: pointer; font-size: 0.85rem;
+    transition: all 0.2s;
+  }
+  .admin-logout:hover { background: rgba(255,50,50,0.25); }
+
+  .secret-section {
+    background: rgba(10,22,40,0.8);
+    border: 1px solid var(--border); border-radius: 12px;
+    padding: 24px; margin-bottom: 20px;
+  }
+  .secret-section h3 {
+    font-family: 'Orbitron', sans-serif; font-size: 0.85rem;
+    color: var(--blue); letter-spacing: 2px; margin-bottom: 16px;
+  }
+  .change-code-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  .change-code-row input { flex: 1; min-width: 140px; }
+  .change-code-row button {
+    padding: 12px 20px; background: rgba(0,100,200,0.3);
+    border: 1px solid var(--blue); border-radius: 8px;
+    color: var(--blue); font-family: 'Sarabun', sans-serif;
+    cursor: pointer; font-weight: 600; transition: all 0.2s; white-space: nowrap;
+  }
+  .change-code-row button:hover { background: rgba(0,100,200,0.5); }
+
+  .webhook-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+  .webhook-row input { flex: 1; min-width: 200px; }
+  .webhook-row button {
+    padding: 12px 20px; background: rgba(0,180,100,0.2);
+    border: 1px solid #00cc66; border-radius: 8px;
+    color: #00ff88; font-family: 'Sarabun', sans-serif;
+    cursor: pointer; font-weight: 600; transition: all 0.2s; white-space: nowrap;
+  }
+  .webhook-row button:hover { background: rgba(0,180,100,0.35); }
+
+  .info-box {
+    background: rgba(0,80,160,0.1); border: 1px solid rgba(0,120,200,0.3);
+    border-radius: 8px; padding: 14px 16px; font-size: 0.82rem;
+    color: rgba(192,216,240,0.6); line-height: 1.7; margin-top: 14px;
+  }
+
+  /* ─── PARTICLE SPARKS ─── */
+  .spark {
+    position: fixed; pointer-events: none; z-index: 2;
+    width: 2px; height: 2px; border-radius: 50%;
+    background: var(--cyan);
+    animation: sparkFly 1.5s linear forwards;
+  }
+  @keyframes sparkFly {
+    0%   { opacity: 1; transform: translate(0,0) scale(1); }
+    100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0); }
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--dark); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--blue); }
+
+  @media (max-width: 500px) {
+    .form-card { padding: 24px 18px; }
+    .role-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== SPARK CONTAINER ===== -->
+<div id="sparks"></div>
+
+<!-- ===== SECRET CODE MODAL ===== -->
+<div class="overlay" id="adminOverlay">
+  <div class="modal">
+    <div class="modal-title">🔐 ADMIN ACCESS</div>
+    <p style="font-size:0.82rem;color:rgba(192,216,240,0.5);margin-bottom:18px;letter-spacing:1px;">กรอกรหัสลับเพื่อเข้าสู่หน้าหลังบ้าน</p>
+    <input type="password" id="secretInput" placeholder="••••••••" autocomplete="off" onkeydown="if(event.key==='Enter')checkSecret()">
+    <p class="modal-err" id="secretErr"></p>
+    <button class="modal-btn" onclick="checkSecret()">เข้าสู่ระบบ</button>
+    <button class="modal-btn" onclick="closeAdmin()" style="background:rgba(100,100,100,0.2);border-color:rgba(150,150,150,0.4);color:rgba(192,216,240,0.5);margin-top:8px;">ยกเลิก</button>
+  </div>
+</div>
+
+<!-- ===== TOAST ===== -->
+<div class="toast" id="toast"></div>
+
+<!-- ===== MAIN WRAPPER ===== -->
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="logo-wrap">
+      <!-- Logo with background removed via mix-blend-mode -->
+      <img src="/mnt/user-data/uploads/E8DF51EB-97AC-4F9A-91E6-C83BB44F9499.jpg" alt="CMC ES Logo" style="mix-blend-mode:screen;border-radius:50%;">
+    </div>
+    <h1 class="site-title">CMC ES</h1>
+    <p class="site-sub">Esports Club — ระบบสมัครสมาชิก</p>
+  </div>
+
+  <!-- PUBLIC FORM SECTION -->
+  <div id="publicSection">
+
+    <div class="divider"><span>⚡ เลือกตำแหน่งที่ต้องการสมัคร ⚡</span></div>
+
+    <!-- ROLE SELECTOR -->
+    <div class="role-grid">
+      <button class="role-btn" onclick="selectRole('coach', this)">
+        <span class="role-icon">🎯</span> โค้ช
+      </button>
+      <button class="role-btn" onclick="selectRole('player', this)">
+        <span class="role-icon">🎮</span> นักแข่ง
+      </button>
+      <button class="role-btn" onclick="selectRole('caster', this)">
+        <span class="role-icon">🎙️</span> นักพากย์
+      </button>
+      <button class="role-btn" onclick="selectRole('front', this)">
+        <span class="role-icon">📢</span> ทีมงานหน้าบ้าน
+      </button>
+      <button class="role-btn" onclick="selectRole('back', this)">
+        <span class="role-icon">⚙️</span> ทีมงานหลังบ้าน
+      </button>
+    </div>
+
+    <!-- ── FORM: COACH ── -->
+    <div class="form-card" id="form-coach">
+      <div class="form-title">📋 ฟอร์มสมัคร — โค้ช</div>
+      <div class="field"><label><span>◆</span>ชื่อ-นามสกุล</label>
+        <input type="text" id="coach-name" placeholder="กรอกชื่อ-นามสกุล"></div>
+      <div class="field"><label><span>◆</span>ชั้นเรียน</label>
+        <input type="text" id="coach-class" placeholder="เช่น ม.5/2"></div>
+      <div class="field"><label><span>◆</span>เกมที่จะสมัคร</label>
+        <input type="text" id="coach-game" placeholder="เช่น ROV, Valorant, PUBG Mobile"></div>
+      <div class="field"><label><span>◆</span>เหตุผลที่อยากเข้าชมรมนี้ <span style="color:rgba(192,216,240,0.4);font-size:0.7rem;">(ไม่ต่ำกว่า 2 บรรทัด)</span></label>
+        <textarea id="coach-reason" placeholder="กรุณาอธิบายเหตุผลอย่างละเอียด..."></textarea></div>
+      <div class="field"><label><span>◆</span>Rank ในเกม</label>
+        <input type="text" id="coach-rank" placeholder="เช่น Diamond, Grandmaster"></div>
+      <div class="field"><label><span>◆</span>มีประสบการณ์แข่งขันมั้ย?</label>
+        <div class="exp-toggle">
+          <button class="exp-btn yes" onclick="setExp('coach','yes',this)">✅ มี</button>
+          <button class="exp-btn no"  onclick="setExp('coach','no',this)">❌ ไม่มี</button>
+        </div></div>
+      <input type="hidden" id="coach-exp" value="">
+      <button class="submit-btn" onclick="submitForm('coach')">⚡ ส่งใบสมัคร</button>
+    </div>
+
+    <!-- ── FORM: PLAYER ── -->
+    <div class="form-card" id="form-player">
+      <div class="form-title">📋 ฟอร์มสมัคร — นักแข่ง</div>
+      <div class="field"><label><span>◆</span>ชื่อ-นามสกุล</label>
+        <input type="text" id="player-name" placeholder="กรอกชื่อ-นามสกุล"></div>
+      <div class="field"><label><span>◆</span>ชั้นเรียน</label>
+        <input type="text" id="player-class" placeholder="เช่น ม.4/1"></div>
+      <div class="field"><label><span>◆</span>เกมที่จะสมัคร</label>
+        <input type="text" id="player-game" placeholder="เช่น ROV, Free Fire, CS2"></div>
+      <div class="field"><label><span>◆</span>เหตุผลที่อยากเข้าชมรมนี้</label>
+        <textarea id="player-reason" placeholder="กรุณาอธิบายเหตุผลอย่างละเอียด..."></textarea></div>
+      <div class="field"><label><span>◆</span>Rank ในเกม</label>
+        <input type="text" id="player-rank" placeholder="เช่น Mythic, Radiant, GE"></div>
+      <div class="field"><label><span>◆</span>มีประสบการณ์แข่งขันมั้ย?</label>
+        <div class="exp-toggle">
+          <button class="exp-btn yes" onclick="setExp('player','yes',this)">✅ มี</button>
+          <button class="exp-btn no"  onclick="setExp('player','no',this)">❌ ไม่มี</button>
+        </div></div>
+      <input type="hidden" id="player-exp" value="">
+      <button class="submit-btn" onclick="submitForm('player')">⚡ ส่งใบสมัคร</button>
+    </div>
+
+    <!-- ── FORM: CASTER ── -->
+    <div class="form-card" id="form-caster">
+      <div class="form-title">📋 ฟอร์มสมัคร — นักพากย์</div>
+      <div class="field"><label><span>◆</span>ชื่อ-นามสกุล</label>
+        <input type="text" id="caster-name" placeholder="กรอกชื่อ-นามสกุล"></div>
+      <div class="field"><label><span>◆</span>ชั้นเรียน</label>
+        <input type="text" id="caster-class" placeholder="เช่น ม.6/3"></div>
+      <div class="field"><label><span>◆</span>เกมที่จะสมัคร</label>
+        <input type="text" id="caster-game" placeholder="เกมที่จะพากย์"></div>
+      <div class="field"><label><span>◆</span>เหตุผลที่อยากเข้าชมรมนี้</label>
+        <textarea id="caster-reason" placeholder="กรุณาอธิบายเหตุผลอย่างละเอียด..."></textarea></div>
+      <div class="field"><label><span>◆</span>Rank ในเกม</label>
+        <input type="text" id="caster-rank" placeholder="ระดับ Rank ของคุณ"></div>
+      <div class="field"><label><span>◆</span>มีประสบการณ์แข่งขันมั้ย?</label>
+        <div class="exp-toggle">
+          <button class="exp-btn yes" onclick="setExp('caster','yes',this)">✅ มี</button>
+          <button class="exp-btn no"  onclick="setExp('caster','no',this)">❌ ไม่มี</button>
+        </div></div>
+      <input type="hidden" id="caster-exp" value="">
+      <button class="submit-btn" onclick="submitForm('caster')">⚡ ส่งใบสมัคร</button>
+    </div>
+
+    <!-- ── FORM: FRONT ── -->
+    <div class="form-card" id="form-front">
+      <div class="form-title">📋 ฟอร์มสมัคร — ทีมงานหน้าบ้าน</div>
+      <div class="field"><label><span>◆</span>ชื่อ-นามสกุล</label>
+        <input type="text" id="front-name" placeholder="กรอกชื่อ-นามสกุล"></div>
+      <div class="field"><label><span>◆</span>ชั้นเรียน</label>
+        <input type="text" id="front-class" placeholder="เช่น ม.5/4"></div>
+      <div class="field"><label><span>◆</span>เกมที่จะสมัคร</label>
+        <input type="text" id="front-game" placeholder="เกมที่ต้องการดูแล"></div>
+      <div class="field"><label><span>◆</span>เหตุผลที่อยากเข้าชมรมนี้</label>
+        <textarea id="front-reason" placeholder="กรุณาอธิบายเหตุผลอย่างละเอียด..."></textarea></div>
+      <div class="field"><label><span>◆</span>Rank ในเกม</label>
+        <input type="text" id="front-rank" placeholder="ระดับ Rank (ถ้ามี)"></div>
+      <div class="field"><label><span>◆</span>มีประสบการณ์แข่งขันมั้ย?</label>
+        <div class="exp-toggle">
+          <button class="exp-btn yes" onclick="setExp('front','yes',this)">✅ มี</button>
+          <button class="exp-btn no"  onclick="setExp('front','no',this)">❌ ไม่มี</button>
+        </div></div>
+      <input type="hidden" id="front-exp" value="">
+      <button class="submit-btn" onclick="submitForm('front')">⚡ ส่งใบสมัคร</button>
+    </div>
+
+    <!-- ── FORM: BACK ── -->
+    <div class="form-card" id="form-back">
+      <div class="form-title">📋 ฟอร์มสมัคร — ทีมงานหลังบ้าน</div>
+      <div class="field"><label><span>◆</span>ชื่อ-นามสกุล</label>
+        <input type="text" id="back-name" placeholder="กรอกชื่อ-นามสกุล"></div>
+      <div class="field"><label><span>◆</span>ชั้นเรียน</label>
+        <input type="text" id="back-class" placeholder="เช่น ม.4/5"></div>
+      <div class="field"><label><span>◆</span>เกมที่จะสมัคร</label>
+        <input type="text" id="back-game" placeholder="เกมที่ต้องการสนับสนุน"></div>
+      <div class="field"><label><span>◆</span>เหตุผลที่อยากเข้าชมรมนี้</label>
+        <textarea id="back-reason" placeholder="กรุณาอธิบายเหตุผลอย่างละเอียด..."></textarea></div>
+      <div class="field"><label><span>◆</span>Rank ในเกม</label>
+        <input type="text" id="back-rank" placeholder="ระดับ Rank (ถ้ามี)"></div>
+      <div class="field"><label><span>◆</span>มีประสบการณ์แข่งขันมั้ย?</label>
+        <div class="exp-toggle">
+          <button class="exp-btn yes" onclick="setExp('back','yes',this)">✅ มี</button>
+          <button class="exp-btn no"  onclick="setExp('back','no',this)">❌ ไม่มี</button>
+        </div></div>
+      <input type="hidden" id="back-exp" value="">
+      <button class="submit-btn" onclick="submitForm('back')">⚡ ส่งใบสมัคร</button>
+    </div>
+
+  </div><!-- /publicSection -->
+
+  <!-- ===== ADMIN PANEL ===== -->
+  <div id="adminPanel">
+    <div class="admin-header">
+      <div class="admin-title">⚙️ ADMIN PANEL</div>
+      <button class="admin-logout" onclick="logoutAdmin()">🚪 ออกจากระบบ</button>
+    </div>
+
+    <div class="secret-section">
+      <h3>🔑 เปลี่ยนรหัสลับ</h3>
+      <div class="change-code-row">
+        <input type="password" id="newCode1" placeholder="รหัสใหม่">
+        <input type="password" id="newCode2" placeholder="ยืนยันรหัสใหม่">
+        <button onclick="changeSecret()">บันทึก</button>
+      </div>
+      <p id="codeMsg" style="font-size:0.8rem;margin-top:8px;min-height:16px;color:#00ff88;"></p>
+    </div>
+
+    <div class="secret-section">
+      <h3>📡 ตั้งค่า Google Apps Script URL</h3>
+      <p style="font-size:0.78rem;color:rgba(192,216,240,0.45);margin-bottom:10px;">วาง Web App URL จาก Google Apps Script (ตัวกลางส่งไป Discord)</p>
+      <div class="webhook-row">
+        <input type="text" id="webhookInput" placeholder="https://script.google.com/macros/s/...">
+        <button onclick="saveWebhook()">💾 บันทึก</button>
+      </div>
+      <p id="webhookMsg" style="font-size:0.8rem;margin-top:8px;min-height:16px;color:#00ff88;"></p>
+      <div class="info-box">
+        <strong style="color:var(--cyan);">📌 วิธีตั้งค่า — Google Apps Script (อัปเดต):</strong><br>
+        1. ไปที่ <a href="https://script.google.com" target="_blank" style="color:var(--blue);">script.google.com</a> → สร้าง Project ใหม่<br>
+        2. วางโค้ดนี้ลงไป (แทนที่โค้ดเดิมทั้งหมด):<br>
+        <code style="display:block;margin:8px 0;padding:8px;background:rgba(0,0,0,0.4);border-radius:6px;font-size:0.75rem;line-height:1.6;color:#adf;">
+const DISCORD_WH = "วาง_DISCORD_WEBHOOK_URL_ที่นี่";<br>
+<br>
+function doGet(e) {<br>
+&nbsp;&nbsp;try {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;const payload = JSON.parse(e.parameter.payload);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;UrlFetchApp.fetch(DISCORD_WH, {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;method: "post",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;contentType: "application/json",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;payload: JSON.stringify(payload)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;});<br>
+&nbsp;&nbsp;} catch(err) { Logger.log(err); }<br>
+&nbsp;&nbsp;return ContentService<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.createTextOutput("ok")<br>
+&nbsp;&nbsp;&nbsp;&nbsp;.setMimeType(ContentService.MimeType.TEXT);<br>
+}<br>
+<br>
+function doPost(e) { return doGet(e); }
+        </code>
+        3. Deploy → New deployment → Web app<br>
+        &nbsp;&nbsp;&nbsp;• Execute as: <strong>Me</strong> &nbsp;|&nbsp; Who has access: <strong>Anyone</strong><br>
+        4. คัดลอก <strong>Web app URL</strong> นำมาวางด้านบน → บันทึก
+      </div>
+    </div>
+
+    <div class="secret-section">
+      <h3>🎨 สีธีมหน้าเว็บ</h3>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;">
+        <button onclick="setTheme('#00aaff','#00ffea')" style="padding:10px 16px;background:linear-gradient(135deg,#00aaff,#00ffea);border:none;border-radius:6px;color:#000;font-weight:700;cursor:pointer;font-size:0.82rem;">🔵 Blue Cyber</button>
+        <button onclick="setTheme('#ff00aa','#ff80ff')" style="padding:10px 16px;background:linear-gradient(135deg,#ff00aa,#ff80ff);border:none;border-radius:6px;color:#000;font-weight:700;cursor:pointer;font-size:0.82rem;">🩷 Pink Neon</button>
+        <button onclick="setTheme('#ff6600','#ffcc00')" style="padding:10px 16px;background:linear-gradient(135deg,#ff6600,#ffcc00);border:none;border-radius:6px;color:#000;font-weight:700;cursor:pointer;font-size:0.82rem;">🔥 Fire</button>
+        <button onclick="setTheme('#00ff66','#aaff00')" style="padding:10px 16px;background:linear-gradient(135deg,#00ff66,#aaff00);border:none;border-radius:6px;color:#000;font-weight:700;cursor:pointer;font-size:0.82rem;">☘️ Matrix</button>
+        <button onclick="setTheme('#aa00ff','#ff00ff')" style="padding:10px 16px;background:linear-gradient(135deg,#aa00ff,#ff00ff);border:none;border-radius:6px;color:#000;font-weight:700;cursor:pointer;font-size:0.82rem;">💜 Purple</button>
+      </div>
+      <p style="font-size:0.75rem;color:rgba(192,216,240,0.35);">* เปลี่ยนสีธีมหลักและสีเน้น (รีเฟรชหน้าคืนค่าเดิม)</p>
+    </div>
+
+  </div>
+
+  <!-- Admin secret link -->
+  <div class="admin-link">
+    <a href="#" onclick="openAdminModal(event)">◈ admin</a>
+  </div>
+
+</div><!-- /wrapper -->
+
+<script>
+// ─── STATE ───
+let SECRET = localStorage.getItem('cmc_secret') || 'CMC2025';
+let WEBHOOK = localStorage.getItem('cmc_webhook') || '';
+let expState = {};
+
+// ─── ROLE SELECT ───
+function selectRole(role, btn) {
+  document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.form-card').forEach(f => f.classList.remove('visible'));
+  btn.classList.add('active');
+  const card = document.getElementById('form-'+role);
+  if (card) {
+    card.classList.add('visible');
+    card.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+  spawnSparks(btn);
+}
+
+// ─── EXP TOGGLE ───
+function setExp(role, val, btn) {
+  const row = btn.closest('.exp-toggle');
+  row.querySelectorAll('.exp-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  document.getElementById(role+'-exp').value = val;
+}
+
+// ─── SUBMIT ───
+async function submitForm(role) {
+  const get = id => document.getElementById(id)?.value?.trim() || '';
+
+  const name   = get(role+'-name');
+  const cls    = get(role+'-class');
+  const game   = get(role+'-game');
+  const reason = get(role+'-reason');
+  const rank   = get(role+'-rank');
+  const exp    = get(role+'-exp');
+
+  // Validate
+  if (!name||!cls||!game||!reason||!rank) {
+    showToast('⚠️ กรุณากรอกข้อมูลให้ครบทุกช่อง', 'error'); return;
+  }
+  const lines = reason.split('\n').filter(l=>l.trim().length>0);
+  if (lines.length < 2 && reason.length < 60) {
+    showToast('⚠️ กรุณากรอกเหตุผลให้มากกว่า 2 บรรทัด', 'error'); return;
+  }
+  if (!exp) {
+    showToast('⚠️ กรุณาเลือกประสบการณ์การแข่งขัน', 'error'); return;
+  }
+
+  const roleLabel = {
+    coach:'โค้ช', player:'นักแข่ง', caster:'นักพากย์',
+    front:'ทีมงานหน้าบ้าน', back:'ทีมงานหลังบ้าน'
+  }[role] || role;
+
+  const expLabel = exp === 'yes' ? '✅ มีประสบการณ์' : '❌ ไม่มีประสบการณ์';
+
+  const btn = document.querySelector('#form-'+role+' .submit-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ กำลังส่ง...';
+
+  // Build Discord embed
+  const payload = {
+    username: 'CMC ES — ระบบสมัคร',
+    avatar_url: 'https://i.imgur.com/4M34hi2.png',
+    embeds: [{
+      title: `📥 ใบสมัครใหม่ — ${roleLabel}`,
+      color: 0x00aaff,
+      fields: [
+        { name: '👤 ชื่อ-นามสกุล',   value: name,     inline: true  },
+        { name: '🏫 ชั้นเรียน',       value: cls,      inline: true  },
+        { name: '🎮 เกมที่สมัคร',     value: game,     inline: false },
+        { name: '🏆 Rank',            value: rank,     inline: true  },
+        { name: '🥇 ประสบการณ์',      value: expLabel, inline: true  },
+        { name: '💬 เหตุผลที่สมัคร',  value: reason,   inline: false },
+      ],
+      footer: { text: 'CMC ES Esports Club • ' + new Date().toLocaleString('th-TH') },
+      thumbnail: { url: 'https://i.imgur.com/4M34hi2.png' }
+    }]
+  };
+
+  if (!WEBHOOK) {
+    showToast('⚠️ ยังไม่ได้ตั้งค่า Apps Script URL — กรุณาติดต่อผู้ดูแล', 'error');
+    btn.disabled = false; btn.textContent = '⚡ ส่งใบสมัคร'; return;
+  }
+
+  try {
+    await sendViaForm(WEBHOOK, payload);
+    showToast('✅ ส่งใบสมัครสำเร็จ! รอการติดต่อกลับ', 'success');
+    clearForm(role);
+  } catch(err) {
+    showToast('❌ เกิดข้อผิดพลาด กรุณาลองใหม่', 'error');
+    console.error(err);
+  }
+
+  btn.disabled = false; btn.textContent = '⚡ ส่งใบสมัคร';
+}
+
+// ─── SEND VIA FETCH no-cors (ส่งไปแล้วถือว่าสำเร็จ) ───
+async function sendViaForm(url, payload) {
+  // ส่งข้อมูลเป็น form-urlencoded ผ่าน GET
+  const encoded = encodeURIComponent(JSON.stringify(payload));
+  const fullUrl = url + '?payload=' + encoded;
+  // no-cors = ไม่อ่าน response แต่ส่งได้ — Apps Script รับได้แน่นอน
+  await fetch(fullUrl, { method: 'GET', mode: 'no-cors' });
+}
+
+function clearForm(role) {
+  ['name','class','game','reason','rank'].forEach(f => {
+    const el = document.getElementById(role+'-f');
+    const el2 = document.getElementById(role+'-'+f);
+    if (el2) el2.value = '';
+  });
+  document.getElementById(role+'-exp').value = '';
+  const card = document.getElementById('form-'+role);
+  card.querySelectorAll('.exp-btn').forEach(b => b.classList.remove('sel'));
+}
+
+// ─── ADMIN ───
+function openAdminModal(e) {
+  e.preventDefault();
+  document.getElementById('secretInput').value = '';
+  document.getElementById('secretErr').textContent = '';
+  document.getElementById('adminOverlay').classList.add('show');
+  setTimeout(() => document.getElementById('secretInput').focus(), 200);
+}
+function closeAdmin() {
+  document.getElementById('adminOverlay').classList.remove('show');
+}
+function checkSecret() {
+  const val = document.getElementById('secretInput').value;
+  if (val === SECRET) {
+    document.getElementById('adminOverlay').classList.remove('show');
+    document.getElementById('publicSection').style.display = 'none';
+    document.getElementById('adminPanel').classList.add('visible');
+    // fill webhook field
+    document.getElementById('webhookInput').value = WEBHOOK;
+  } else {
+    document.getElementById('secretErr').textContent = '❌ รหัสไม่ถูกต้อง';
+    document.getElementById('secretInput').value = '';
+    document.getElementById('secretInput').focus();
+  }
+}
+function logoutAdmin() {
+  document.getElementById('adminPanel').classList.remove('visible');
+  document.getElementById('publicSection').style.display = 'block';
+}
+function changeSecret() {
+  const a = document.getElementById('newCode1').value;
+  const b = document.getElementById('newCode2').value;
+  const msg = document.getElementById('codeMsg');
+  if (!a || a.length < 4) { msg.style.color='#ff6666'; msg.textContent='❌ รหัสต้องมีอย่างน้อย 4 ตัวอักษร'; return; }
+  if (a !== b) { msg.style.color='#ff6666'; msg.textContent='❌ รหัสไม่ตรงกัน'; return; }
+  SECRET = a;
+  localStorage.setItem('cmc_secret', a);
+  document.getElementById('newCode1').value = '';
+  document.getElementById('newCode2').value = '';
+  msg.style.color='#00ff88'; msg.textContent='✅ เปลี่ยนรหัสลับสำเร็จ!';
+  setTimeout(() => msg.textContent='', 3000);
+}
+function saveWebhook() {
+  const url = document.getElementById('webhookInput').value.trim();
+  const msg = document.getElementById('webhookMsg');
+  const validUrl = url.startsWith('https://script.google.com/macros/') ||
+                   url.startsWith('https://discord.com/api/webhooks/') ||
+                   url.startsWith('https://discordapp.com/api/webhooks/');
+  if (!validUrl) {
+    msg.style.color='#ff6666'; msg.textContent='❌ URL ไม่ถูกต้อง ต้องเป็น Apps Script URL หรือ Discord Webhook URL'; return;
+  }
+  WEBHOOK = url;
+  localStorage.setItem('cmc_webhook', url);
+  msg.style.color='#00ff88'; msg.textContent='✅ บันทึก Webhook สำเร็จ!';
+  setTimeout(() => msg.textContent='', 3000);
+}
+
+// ─── THEME SWITCHER ───
+function setTheme(blue, cyan) {
+  document.documentElement.style.setProperty('--blue', blue);
+  document.documentElement.style.setProperty('--cyan', cyan);
+  document.documentElement.style.setProperty('--glow', blue);
+}
+
+// ─── TOAST ───
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast '+type+' show';
+  clearTimeout(t._tid);
+  t._tid = setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// ─── SPARKS ───
+function spawnSparks(el) {
+  const rect = el.getBoundingClientRect();
+  const cx = rect.left + rect.width/2;
+  const cy = rect.top + rect.height/2;
+  for (let i=0; i<14; i++) {
+    const s = document.createElement('div');
+    s.className = 'spark';
+    const angle = Math.random()*360;
+    const dist = 40+Math.random()*80;
+    s.style.left = cx+'px'; s.style.top = cy+'px';
+    s.style.setProperty('--tx', Math.cos(angle*Math.PI/180)*dist+'px');
+    s.style.setProperty('--ty', Math.sin(angle*Math.PI/180)*dist+'px');
+    s.style.animationDuration = (0.6+Math.random()*0.9)+'s';
+    s.style.width = s.style.height = (1+Math.random()*3)+'px';
+    document.getElementById('sparks').appendChild(s);
+    setTimeout(() => s.remove(), 1500);
+  }
+}
+
+// Sparks on submit
+document.querySelectorAll('.submit-btn').forEach(btn => {
+  btn.addEventListener('click', () => spawnSparks(btn));
+});
+</script>
+</body>
+</html>
